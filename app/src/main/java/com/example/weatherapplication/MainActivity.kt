@@ -1,12 +1,12 @@
 package com.example.weatherapplication
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import org.json.JSONObject
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -14,13 +14,49 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    val CITY: String = "manila,ph"
+    var CITY: String = "manila,ph"
+
     val API: String = "223a63aab6b7cc7a02e6773e1bcf5bcd"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        loadData()
+
         weatherTask().execute()
+
+        var search_button : Button = findViewById(R.id.search_button)
+        var search_bar : EditText = findViewById(R.id.search_bar)
+        var search_text_content : TextView = findViewById(R.id.search_text_content)
+
+
+        search_button.setOnClickListener {
+            saveData(search_bar,search_text_content)
+        }
+
+    }
+
+    private fun saveData(search_bar : EditText, search_text_content : TextView)  {
+        val insertedText : String = search_bar.text.toString()
+        search_text_content.text = insertedText
+
+        val sharedPreferences :SharedPreferences = getSharedPreferences( "sharedPrefs", Context.MODE_PRIVATE)
+        val editor : SharedPreferences.Editor = sharedPreferences.edit()
+        editor.apply {
+            putString("CITY",insertedText)
+        } .apply()
+
+        Toast.makeText(this,"Data saved", Toast.LENGTH_SHORT).show()
+
+    }
+
+    private fun loadData() {
+        val sharedPreferences :SharedPreferences = getSharedPreferences("sharedPrefs",Context.MODE_PRIVATE)
+        val savedString :String? = sharedPreferences.getString("CITY",null)
+
+
+        CITY = savedString.toString()
 
     }
 
@@ -31,6 +67,8 @@ class MainActivity : AppCompatActivity() {
             findViewById<ProgressBar>(R.id.loader).visibility = View.VISIBLE
             findViewById<RelativeLayout>(R.id.mainContainer).visibility = View.GONE
             findViewById<TextView>(R.id.errortext).visibility = View.GONE
+
+
         }
 
         override fun doInBackground(vararg p0:String?): String?{

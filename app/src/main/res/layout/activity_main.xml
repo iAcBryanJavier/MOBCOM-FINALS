@@ -60,6 +60,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
+                android:hint="Type the city here"
+                android:textColorHint="@color/gray"
+                android:textSize="16sp"
+                android:textStyle="italic"
                 android:textColor="@color/white" />
 
             <TextView
@@ -76,6 +80,7 @@
                 android:layout_gravity="center"
                 android:text="Save City"
                 android:textColor="@color/black" />
+
 
         </LinearLayout>
 
