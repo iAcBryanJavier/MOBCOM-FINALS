@@ -14,8 +14,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    var CITY: String = "manila,ph"
-
+    var CITY: String = ""
     val API: String = "223a63aab6b7cc7a02e6773e1bcf5bcd"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +22,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         loadData()
-
         weatherTask().execute()
 
         var search_button : Button = findViewById(R.id.search_button)
@@ -38,8 +36,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveData(search_bar : EditText, search_text_content : TextView)  {
-        val insertedText : String = search_bar.text.toString()
-        search_text_content.text = insertedText
+        val insertedText : String = search_bar.text.toString() + ",ph"
 
         val sharedPreferences :SharedPreferences = getSharedPreferences( "sharedPrefs", Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = sharedPreferences.edit()
@@ -49,13 +46,14 @@ class MainActivity : AppCompatActivity() {
 
         Toast.makeText(this,"Data saved", Toast.LENGTH_SHORT).show()
 
+        loadData()
+        weatherTask().execute()
+
     }
 
     private fun loadData() {
         val sharedPreferences :SharedPreferences = getSharedPreferences("sharedPrefs",Context.MODE_PRIVATE)
-        val savedString :String? = sharedPreferences.getString("CITY",null)
-
-
+        val savedString :String? = sharedPreferences.getString("CITY","manila,ph")
         CITY = savedString.toString()
 
     }
@@ -121,6 +119,8 @@ class MainActivity : AppCompatActivity() {
             }catch (e:Exception){
                 findViewById<ProgressBar>(R.id.loader).visibility = View.GONE
                 findViewById<TextView>(R.id.errortext).visibility = View.VISIBLE
+                CITY = "manila,ph"
+                weatherTask().execute()
             }
         }
     }
